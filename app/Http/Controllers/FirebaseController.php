@@ -4,10 +4,11 @@ use Illuminate\Http\Request;
 use Kreait\Firebase;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\ServiceAccount;
-use App\Firebase\User;
 use Kreait\Firebase\Exception;
 use Kreait\Firebase\Database;
-use App\Firebase\FirebaseAuth;
+use Google\Cloud\Storage\StorageClient;
+use League\Flysystem\Filesystem;
+use Superbalist\Flysystem\GoogleStorage\GoogleStorageAdapter;
 use Validator;
 
 class FirebaseController extends Controller
@@ -64,10 +65,12 @@ class FirebaseController extends Controller
         $lastName = $request->input('lastName');
         $email = $request->input('inputEmail');
         $password = $request->input('inputPassword');
+        $phoneNo = $request->input('inputPhone');
 
         $validator = Validator::make($request->all(), [
             'firstName' => 'required|min:3',
             'lastName' => 'required|min:3',
+            'inputPhone' => 'required',
             'inputEmail' => 'required|email|min:6',
             'inputPassword' => 'required|min:6',
             'inputPassword2' => 'required|same:inputPassword|min:6',
@@ -87,6 +90,7 @@ class FirebaseController extends Controller
             'firstName' => $firstName,
             'lastName' => $lastName,
             'email' =>  $email,
+            'phoneNo' => $phoneNo
         ];
 
         $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/FirebaseKey.json');
@@ -113,24 +117,26 @@ class FirebaseController extends Controller
     }
 
     public function addProperty(Request $request){
+        if(!session()->has('userId'))
+            return "[Error]: Cannot update property - user not logged in.";
+
         $description = $request->input('inputDescription');
         $bathrooms = $request->input('inputBathrooms');
         $bedrooms = $request->input('inputBedrooms');
         $location = $request->input('inputLocation');
         $price = $request->input('inputPrice');
         $area = $request->input('inputArea');
-        $type = $request->input('inputType');
         $toRent = $request->input('inputToRent') == NULL ? 1 : 0;
+        $type = $toRent . $bathrooms . $bedrooms . $location;
         $dateAdded = date('Y-m-d');
 
         $validator = Validator::make($request->all(), [
             'inputDescription' => 'required|min:3|max:25',
             'inputBathrooms' => 'required|numeric|min:1',
             'inputBedrooms' => 'required|numeric|min:1',
-            'inputLocation' => 'required|min:3',
+            'inputLocation' => 'required|integer',
             'inputPrice' => 'required|numeric|min:1',
             'inputArea' => 'required|numeric|min:1',
-            'inputType' => 'required|numeric|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -152,10 +158,14 @@ class FirebaseController extends Controller
                 'bedrooms' => $bedrooms,
                 'dateAdded' => $dateAdded,
                 'description' => $description,
-                'location' => $location,
+                'location' => $location,Â
                 'price' => $price,
                 'toRent' => $toRent,
-                'type' => $type]);
+                'type' => $type,
+                'owner' => session()->get('userId'),
+                'lat' => 51.512053,
+                'lng' => -0.085472
+            ]);
         return redirect('properties/')->with('status', 'You added the property succesfully!');
     }
 
@@ -171,7 +181,13 @@ class FirebaseController extends Controller
         $area = substr($request->input('area'), 0, -4);
         $dateAdded = $request->input('addedOn');
         $propertyId = $request->input('propertyId');
+        $owner = $request->input('owner');
+        $lat = $request->input('lat');
+        $lng = $request->input('lng');
         $toRent = $request->input('availability') == "To Rent" ? 1 : 0;
+
+        if(session()->get('userId') != $owner)
+            return "[Error]: Cannot update property - invalid permissions.";
 
         $updates = [
             'description' => $description,
@@ -181,7 +197,9 @@ class FirebaseController extends Controller
             'price' => $price,
             'area' => $area,
             'dateAdded' => $dateAdded,
-            'toRent' => $toRent
+            'toRent' => $toRent,
+            'lat' => $lat,
+            'lng' => $lng
         ];
 
         $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/FirebaseKey.json');
@@ -192,6 +210,33 @@ class FirebaseController extends Controller
         $database = $firebase->getDatabase();
         $database   ->getReference('Properties/'.$propertyId)
                     ->update($updates);
+    }
+
+    public function searchProperty(Request $request) {
+        $rent = $request->input('toRent');
+        $bathrooms = $request->input('bathrooms');
+        $bedrooms = $request->input('bedrooms');
+        $location = $request->input('location');
+        $toRent = isset($rent) ? 1 : 0;
+
+        $validator = Validator::make($request->all(), [
+            'bathrooms' => 'required|integer',
+            'bedrooms' => 'required|integer',
+            'location' => 'required|integer',
+        ],
+        [
+            'bathrooms.integer' => 'You didn\'t choose the number of bathrooms',
+            'bedrooms.integer' => 'You didn\'t choose the number of bedrooms',
+            'location.integer' => 'You didn\'t choose the location'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('/')->withErrors($validator)->withInput();
+        }
+
+        $type = $toRent . $bathrooms . $bedrooms . $location;
+
+        return redirect()->route('searchProperties', [$type]);
     }
 
     public function deleteProperty($id) {
@@ -206,6 +251,43 @@ class FirebaseController extends Controller
         $database = $firebase->getDatabase();
         $database   ->getReference('Properties/'.$id)
                     ->remove();
+    }
+
+    public function uploadObject($bucketName, $objectName, $source) {
+        $projectId = 'cloudestate-d10da';
+        $storage = new StorageClient([
+            'projectId' => $projectId,
+            'keyFilePath' => __DIR__.'/StorageAcc.json'
+        ]);
+
+        $file = fopen($source, 'r');
+
+        $bucket = $storage->bucket("images");
+        $object = $bucket->upload($file, [
+            'name' => $objectName
+        ]);
+        printf('Uploaded %s to gs://%s/%s' . PHP_EOL, basename($source), $bucketName, $objectName);
+
+    }
+
+    public function imageUpload(){
+        $file_name = $_FILES['image']['name'];
+        $file_size = $_FILES['image']['size'];
+        $file_tmp = $_FILES['image']['tmp_name'];
+
+        $TMPSS = explode('.',$file_name);
+        $file_ext = strtolower(end($TMPSS));
+
+        $expensions = array("jpeg","jpg","png");
+        if(in_array($file_ext,$expensions)=== false)
+            return redirect('properties/')->with('errors', 'Extension not allowed, please choose a JPEG or PNG file.');
+
+        if($file_size > 2097152)
+            return redirect('properties/')->with('errors', 'File size must be excately 2 MB');
+
+        move_uploaded_file($file_tmp,"images/".$file_name);
+
+        $this->uploadObject("images", $file_name, "images/".$file_name);
     }
 }
 ?>

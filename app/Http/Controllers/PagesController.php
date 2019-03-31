@@ -38,6 +38,32 @@ class PagesController extends Controller
             ->getValue();
     }
 
+    public function retrieveLocations() {
+        $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/FirebaseKey.json');
+        $firebase = (new Factory)
+            ->withServiceAccount($serviceAccount)
+            ->withDatabaseUri('https://cloudestate-d10da.firebaseio.com/')
+            ->create();
+        $database = $firebase->getDatabase();
+        return $database
+            ->getReference('Locations')
+            ->getValue();
+    }
+
+    public function retrievePropertiesByType($type) {
+        $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/FirebaseKey.json');
+        $firebase = (new Factory)
+            ->withServiceAccount($serviceAccount)
+            ->withDatabaseUri('https://cloudestate-d10da.firebaseio.com/')
+            ->create();
+        $database = $firebase->getDatabase();
+        return $database
+            ->getReference('Properties')
+            ->orderByChild('type')
+            ->equalTo($type)
+            ->getValue();
+    }
+
     public function getPropertyById($id) {
         $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/FirebaseKey.json');
         $firebase = (new Factory)
@@ -50,12 +76,25 @@ class PagesController extends Controller
             ->getValue();
     }
 
+    public function getOwnerDetails($userId) {
+        $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/FirebaseKey.json');
+        $firebase = (new Factory)
+            ->withServiceAccount($serviceAccount)
+            ->withDatabaseUri('https://cloudestate-d10da.firebaseio.com/')
+            ->create();
+        $database = $firebase->getDatabase();
+        return $database
+            ->getReference('Users/'.$userId)
+            ->getValue();
+    }
+
     // Static Pages:
 
     public function index() {
         $data = array(
             'title' => 'Homepage',
-            'properties' => $this->retrieveLast3Properties()
+            'properties' => $this->retrieveLast3Properties(),
+            'locations' => $this->retrieveLocations()
         );
         return view('pages.index')->with($data);
     }
@@ -75,7 +114,8 @@ class PagesController extends Controller
             return redirect()->route('index');
 
         $data = array(
-            'title' => 'Add a new property'
+            'title' => 'Add a new property',
+            'locations' => $this->retrieveLocations()
         );
         return view('pages.addproperty')->with($data);
     }
@@ -85,12 +125,26 @@ class PagesController extends Controller
         if($property == NULL)
             return redirect('properties/')->with('error', 'Invalid location id.');
 
+        $owner = $this->getOwnerDetails($property['owner']);
         $data = array(
             'title' => 'Property #'.$id,
             'propertyId' => $id,
-            'property' => $property
+            'property' => $property,
+            'owner' => $owner
         );
         return view('pages.viewproperty')->with($data);
+    }
+
+    public function searchproperty($type) {
+        $properties = $this->retrievePropertiesByType($type);
+        if(count($properties) == 0)
+            return redirect('/')->with('error', 'There are no properties that matches your search');
+
+        $data = array(
+            'title' => 'Search Result',
+            'properties' => $properties
+        );
+        return view('pages.searchproperties')->with($data);
     }
 
     public function properties() {

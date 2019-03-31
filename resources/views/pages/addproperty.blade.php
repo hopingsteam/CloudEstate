@@ -52,7 +52,15 @@
 
                             Location:
                             <label for="inputLocation" class="sr-only">Location</label>
-                            <input type="text" id="inputLocation" class="form-control" placeholder="Location" name="inputLocation" required="" autofocus=""> <br>
+                            @php
+                                array_shift($locations)
+                            @endphp
+                            <select name="inputLocation" class="app-select form-control" required>
+                                <option data-display="Choose locations">Choose locations</option>
+                                @foreach($locations as $locationKey => $location)
+                                    <option value="{{ $locationKey + 1 }}">{{ $location["name"] }}</option>
+                                @endforeach
+                            </select> <br>
 
                             Price:
                             <label for="inputPrice" class="sr-only">Price</label>
@@ -61,10 +69,6 @@
                             Area:
                             <label for="inputArea" class="sr-only">Description</label>
                             <input type="number" id="inputArea" class="form-control" placeholder="Area" name="inputArea" required="" autofocus=""> <br>
-
-                            Type:
-                            <label for="inputType" class="sr-only">Type</label>
-                            <input type="number" id="inputType" class="form-control" placeholder="Type" name="inputType" required="" autofocus=""> <br>
 
                             <input type="checkbox" name="inputToRent" class="onoffswitch3-checkbox" id="myonoffswitch3" checked>
                             <label class="onoffswitch3-label" for="myonoffswitch3">

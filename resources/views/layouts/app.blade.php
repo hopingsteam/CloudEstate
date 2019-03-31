@@ -57,7 +57,7 @@
         <div class="container">
             <div class="row align-items-center justify-content-between d-flex">
                 <div id="logo">
-                    <a href="/"><img src="img/logo.png" alt="" title="" /></a>
+                    <a href="/"><img src="{{ asset("img/logo.png") }}" alt="" title="" /></a>
                 </div>
                 <nav id="nav-menu-container">
                     <ul class="nav-menu">
@@ -131,9 +131,6 @@
 <!-- End footer Area -->
 
 <script src="{{ asset("js/vendor/jquery-2.2.4.min.js") }}"></script>
-<script src=""https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
-        crossorigin="anonymous"></script>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhOdIF3Y9382fqJYt5I_sswSrEw5eihAA"></script>
 <script src="{{ asset("js/vendor/bootstrap.min.js") }}"></script>
 <script src="{{ asset("js/jquery.ajaxchimp.min.js") }}"></script>
 <script src="{{ asset("js/jquery.nice-select.min.js") }}"></script>

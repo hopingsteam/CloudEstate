@@ -19,10 +19,14 @@ Route::get('/register', 'PagesController@register');
 Route::get('/logout', 'PagesController@logout');
 Route::get('/add-property', 'PagesController@addProperty');
 Route::get('/viewproperty/{id}', 'PagesController@viewProperty');
+Route::get('/searchproperty/{type}', 'PagesController@searchProperty')->name('searchProperties');
+
+Route::get('/searchForm', 'FirebaseController@searchProperty')->name('searchForm');
 
 Route::post('/registerForm', 'FirebaseController@register')->name('registerForm');
 Route::post('/loginForm', 'FirebaseController@login')->name('loginForm');
 Route::post('/addPropertyForm', 'FirebaseController@addProperty')->name('addPropertyForm');
 Route::post('/updateProperty', 'FirebaseController@updateProperty')->name('updateProperty');
+Route::post('/imageUpload', 'FirebaseController@imageUpload')->name('imageForm');
 
 Route::delete('/deleteProperty/{id}', 'FirebaseController@deleteProperty');

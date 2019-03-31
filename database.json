@@ -1,0 +1,133 @@
+{
+  "Locations" : [ null, {
+    "name" : "London"
+  }, {
+    "name" : "Bucharest"
+  }, {
+    "name" : "New York"
+  } ],
+  "Properties" : {
+    "-LaCULtI33X8VcDQmbWG" : {
+      "area" : "46",
+      "bathrooms" : "2",
+      "bedrooms" : "2",
+      "dateAdded" : "2019-03-17",
+      "description" : "Two-bedroom apartment",
+      "lat" : "51.5134",
+      "lng" : "-0.0694",
+      "location" : "Bucharest",
+      "owner" : "gBeVGKXZBORAtJGFDwrSJMhsAsi1",
+      "price" : " 32.543",
+      "toRent" : 0,
+      "type" : "0222"
+    },
+    "-LaILJOOQ0-Dxl-E9qiC" : {
+      "area" : "25",
+      "bathrooms" : "2",
+      "bedrooms" : "2",
+      "dateAdded" : "2019-03-19",
+      "description" : "Studio - Bank",
+      "lat" : 51.512053,
+      "lng" : -0.085472,
+      "location" : "London",
+      "owner" : "YmPb310YbSVhIW9MCSGliRfFeqB3",
+      "price" : "42142",
+      "toRent" : 0,
+      "type" : "0122"
+    },
+    "-LaILTzcFZ2HKEKhsZHi" : {
+      "area" : "40",
+      "bathrooms" : "1",
+      "bedrooms" : "1",
+      "dateAdded" : "2019-03-19",
+      "description" : "1 bedroom share",
+      "lat" : 51.512053,
+      "lng" : -0.085472,
+      "location" : "New York",
+      "owner" : "YmPb310YbSVhIW9MCSGliRfFeqB3",
+      "price" : "421124",
+      "toRent" : 0,
+      "type" : "0311"
+    },
+    "-Laq7bicB0cnryHMciwd" : {
+      "area" : "32",
+      "bathrooms" : "2",
+      "bedrooms" : "3",
+      "dateAdded" : "2019-03-25",
+      "description" : "Studio for example",
+      "lat" : 51.512053,
+      "lng" : 0.085472,
+      "location" : "London",
+      "owner" : "YmPb310YbSVhIW9MCSGliRfFeqB3",
+      "price" : "12000",
+      "toRent" : 1,
+      "type" : "1132"
+    },
+    "-Lb3KavLgIc-lunQ5Dh5" : {
+      "area" : "12",
+      "bathrooms" : "2",
+      "bedrooms" : "3",
+      "dateAdded" : "2019-03-28",
+      "description" : "Another description",
+      "lat" : 51.512053,
+      "lng" : 0.085472,
+      "location" : "New York",
+      "owner" : "gBeVGKXZBORAtJGFDwrSJMhsAsi1",
+      "price" : " 12345667",
+      "toRent" : 1,
+      "type" : "1332"
+    },
+    "-LbJGLm8mO0YMNG2SH2z" : {
+      "area" : "2",
+      "bathrooms" : "2",
+      "bedrooms" : "1",
+      "dateAdded" : "2019-03-31",
+      "description" : "To be deleted",
+      "lat" : 51.512053,
+      "lng" : -0.085472,
+      "location" : "3",
+      "owner" : "gBeVGKXZBORAtJGFDwrSJMhsAsi1",
+      "price" : "312421",
+      "toRent" : 0,
+      "type" : "0213"
+    }
+  },
+  "Users" : {
+    "16JtkxEulWMJvSRrgDVySpK9TGg2" : {
+      "email" : "petersm@yahoo.com",
+      "firstName" : "Peter",
+      "lastName" : "Smith",
+      "phoneNo" : "020 7040 5060"
+    },
+    "UvNUuLaGCeN7QuZZ2O5QIIC3abg1" : {
+      "email" : "marcelpopescu@yahoo.com",
+      "firstName" : "Marcelino",
+      "lastName" : "Popescu",
+      "phoneNo" : "020 7040 5060"
+    },
+    "YmPb310YbSVhIW9MCSGliRfFeqB3" : {
+      "email" : "gabi@gabi.com",
+      "firstName" : "Gabi",
+      "lastName" : "Gabi2",
+      "phoneNo" : "020 7040 5060"
+    },
+    "gBeVGKXZBORAtJGFDwrSJMhsAsi1" : {
+      "email" : "matragunamihai97@gmail.com",
+      "firstName" : "Mihai-Alexandru",
+      "lastName" : "Matraguna",
+      "phoneNo" : "020 7040 5060"
+    },
+    "iGzXPPRl2nQbNEs5Eo1A4N5NWs82" : {
+      "email" : "mail@maaaail.com",
+      "firstName" : "Testez",
+      "lastName" : "Ceva",
+      "phoneNo" : "024814298421"
+    },
+    "qp6BnGEQGFazPZbytswIVN631G93" : {
+      "email" : "firstsecond@mail.com",
+      "firstName" : "First",
+      "lastName" : "Second",
+      "phoneNo" : "020 7040 5060"
+    }
+  }
+}

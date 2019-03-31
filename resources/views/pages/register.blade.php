@@ -29,6 +29,8 @@
                             <input type="text" id="lastName" class="form-control {{ $errors->has('lastName') ? ' is-invalid' : '' }}" placeholder="Last Name" name="lastName" required="" autofocus=""> <br>
                             <label for="inputEmail" class="sr-only">Email address</label>
                             <input type="email" id="inputEmail" class="form-control {{ $errors->has('inputEmail') ? ' is-invalid' : '' }}" placeholder="Email address" name="inputEmail" required="" autofocus=""> <br>
+                            <label for="inputPhone" class="sr-only">Phone Number</label>
+                            <input type="text" id="inputPhone" class="form-control {{ $errors->has('inputPhone') ? ' is-invalid' : '' }}" placeholder="Phone Number" name="inputPhone" required="" autofocus=""> <br>
                             <label for="inputPassword" name="inputPassword" class="sr-only">Password</label>
                             <input type="password" id="inputPassword" class="form-control {{ $errors->has('inputPassword') ? ' is-invalid' : '' }}" placeholder="Password" name="inputPassword" required=""> <br>
                             <label for="inputPassword" name="inputPassword2" class="sr-only">Confirm Password</label>
